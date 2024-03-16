@@ -1,10 +1,13 @@
-import mysql from "mysql";
+import mysql from "mysql2";
+
+console.log(process.env)
 
 export const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "esicad-carist-si",
-  port: 3306,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT ?? "3306"),
 });
 
 export const query = async <T>(queryString: string): Promise<T> => {
@@ -13,7 +16,7 @@ export const query = async <T>(queryString: string): Promise<T> => {
       if (err) {
         reject(err);
       } else {
-        resolve(results);
+        resolve(results as T);
       }
     });
   });
