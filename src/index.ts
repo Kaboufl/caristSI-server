@@ -1,6 +1,7 @@
 import express from "express";
 import { query } from "./database.js";
 import { router } from "./routes/routes.js";
+import dotenv from "dotenv";
 
 try {
   const result = await query<any[]>("SELECT 1");
@@ -11,6 +12,7 @@ try {
 
 try {
   const app = express();
+  dotenv.config();
   app.use(express.json());
   app.get("/", (req, res) => {
     res.status(200).send({
@@ -20,7 +22,8 @@ try {
   app.use(router);
   const serverPort = 8080;
   const bindingAddress = "10.86.131.70";
-  app.listen(serverPort, bindingAddress, () =>
+  // app.listen(serverPort, bindingAddress, () =>
+  app.listen(serverPort, () =>
     console.log(`Server started, listening on ${bindingAddress}:${serverPort}`),
   );
 } catch (err) {
