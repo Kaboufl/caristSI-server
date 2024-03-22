@@ -31,6 +31,9 @@ router.post(
         prenomCarist,
         loginCarist,
       });
+    } else {
+      res.status(401);
+      res.send({ message: "Invalid login or password" });
     }
   }),
 );
