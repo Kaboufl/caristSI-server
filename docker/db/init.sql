@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS `package` (
   `packageNumber` bigint NOT NULL,
   `articleReference` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`idPackage`)
+  PRIMARY KEY (`idPackage`),
+  UNIQUE (`packageNumber`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
