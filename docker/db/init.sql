@@ -54,7 +54,7 @@ DROP TABLE IF EXISTS `package`;
 CREATE TABLE IF NOT EXISTS `package` (
   `idPackage` int NOT NULL AUTO_INCREMENT,
   `packageNumber` bigint NOT NULL,
-  `articleReference` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `articleReference` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`idPackage`),
   UNIQUE (`packageNumber`)

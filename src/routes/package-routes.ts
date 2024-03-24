@@ -2,6 +2,7 @@ import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import { authMiddleware } from "../auth.js";
 import { connection, query } from "../database.js";
+import { ResultSetHeader } from "mysql2";
 
 export const router = express.Router();
 
@@ -27,6 +28,7 @@ router.post("/package", expressAsyncHandler(
           status: "error",
           message: "Missing required information",
         })
+        console.error("requete invalide")
         return
       }
 
@@ -48,6 +50,7 @@ router.post("/package", expressAsyncHandler(
           message: "Le numéro de colis existe déjà",
         })
       } else {
+        console.error(e)
         res.status(500).json({
           status: "error",
           message: "Internal server error",
@@ -74,22 +77,31 @@ router.delete("/package", expressAsyncHandler(
     
     try {
 
-      await connection.promise().query(
+      const [result] = await connection.promise().query<ResultSetHeader>(
         "DELETE FROM package WHERE packageNumber = ?",
         [packageNumber]
       )
+
+      if (!result.affectedRows) {
+        res.status(404)
+          .json({
+            status: "error",
+            message: "Package not found"
+          })
+      }
   
       res.status(200).json({
         status: "success",
         message: "Package deleted",
       })
-      return
+      console.log("Package deleted", result.affectedRows)
 
     } catch (e) {
       res.status(500).json({
         status: "error",
-        message: "Package not found",
+        message: "Internal server error",
       })
+      console.error("Error deleting package")
       return
     }
   }
