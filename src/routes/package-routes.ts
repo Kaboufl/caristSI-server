@@ -61,50 +61,90 @@ router.post("/package", expressAsyncHandler(
   }
 ))
 
+router.delete("/package", async (req, res) => {
 
-router.delete("/package", expressAsyncHandler(
-  async (req, res) => {
-    console.log("request body", req.body)
-    const { articleReference, packageNumber, description } = req.body
+    const packageNumber = req.query.packageNumber;
 
     if (!packageNumber) {
-      res.status(400).json({
+      return res.status(400).json({
         status: "error",
-        message: "Missing required information",
-      })
-      return
+        message: "Numéro de colis manquant",
+      });
     }
-    
-    try {
 
+    try {
       const [result] = await connection.promise().query<ResultSetHeader>(
         "DELETE FROM package WHERE packageNumber = ?",
         [packageNumber]
       )
 
       if (!result.affectedRows) {
-        res.status(404)
-          .json({
-            status: "error",
-            message: "Package not found"
-          })
+        return res.status(404).json({
+          status: "error",
+          message: "Colis non trouvé",
+        });
       }
-  
-      res.status(200).json({
-        status: "success",
-        message: "Package deleted",
-      })
-      console.log("Package deleted", result.affectedRows)
 
-    } catch (e) {
-      res.status(500).json({
+      return res.status(200).json({
+        status: "success",
+        message: "Colis supprimé",
+      });
+    } catch (error) {
+      console.error("Error deleting package", error);
+      return res.status(500).json({
         status: "error",
-        message: "Internal server error",
+        message: "Internal server error"
       })
-      console.error("Error deleting package")
-      return
     }
   }
-))
+);
+
+// http://192.168.1.45:8080/package?packageNumber=453226997
+
+
+// router.delete("/package", expressAsyncHandler(
+//   async (req, res) => {
+//     console.log("request body", req.body)
+//     const { articleReference, packageNumber, description } = req.body
+
+//     if (!packageNumber) {
+//       res.status(400).json({
+//         status: "error",
+//         message: "Missing required information",
+//       })
+//       return
+//     }
+    
+//     try {
+
+//       const [result] = await connection.promise().query<ResultSetHeader>(
+//         "DELETE FROM package WHERE packageNumber = ?",
+//         [packageNumber]
+//       )
+
+//       if (!result.affectedRows) {
+//         res.status(404)
+//           .json({
+//             status: "error",
+//             message: "Package not found"
+//           })
+//       }
+  
+//       res.status(200).json({
+//         status: "success",
+//         message: "Package deleted",
+//       })
+//       console.log("Package deleted", result.affectedRows)
+
+//     } catch (e) {
+//       res.status(500).json({
+//         status: "error",
+//         message: "Internal server error",
+//       })
+//       console.error("Error deleting package")
+//       return
+//     }
+//   }
+// ))
 
 export default { router };
